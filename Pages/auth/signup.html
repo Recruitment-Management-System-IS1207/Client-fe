@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PathFinder - Sign Up</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <div class="container">
+        <div class="signin-wrapper">
+            <!-- Left side - Image -->
+            <div class="image-section">
+                <div class="image-content">
+                    <img src="../../Assests/image/img1.jpg" alt="Professional workspace" />
+                </div>
+            </div>
+
+            <!-- Right side - Sign in form -->
+            <div class="form-section">
+                <div class="form-content">
+                    <div class="brand-header">
+                        <div class="brand-logo">
+                            <a href="../../index.html"><img src="../../Assests/image/pathfinder.png" alt="PathFinder Logo" /></a>
+                        </div>
+                    </div>
+
+                    <div class="signin-form">
+                        <h2>Get Started.</h2>
+                        <p class="signin-subtitle">Enter your email address and choose a strong password to sign up.</p>
+
+                        <form id="signinForm">
+                            <div class="input-group">
+                                <label for="name">Full Name</label>
+                                <input 
+                                    type="text" 
+                                    id="name" 
+                                    name="name" 
+                                    placeholder="Enter your name"
+                                    required
+                                />
+                            </div>
+
+                            <div class="input-group">
+                                <label for="phone">Phone number</label>
+                                <input 
+                                    type="text" 
+                                    id="phone" 
+                                    name="phone" 
+                                    placeholder="Enter your phone number"
+                                    required
+                                />
+                            </div>
+
+
+                            <div class="input-group">
+                                <label for="email">Email Address</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="Enter your email"
+                                    required
+                                />
+                            </div>
+
+                            <div class="input-group">
+                                <label for="password">Password</label>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Enter your password"
+                                    required
+                                />
+                                <div class="password-toggle">
+                                    <span class="toggle-icon" onclick="togglePassword()">👁️</span>
+                                </div>
+                            </div>
+
+
+                            <button type="submit" class="signup-btn">Create Account</button>
+                        </form>
+
+                        <div class="signup-link">
+                            <p>Already have an account? <a href="signin.html">Sign In</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Add your authentication logic here
+            console.log('Sign in attempt:', { email, password });
+            
+            // For demo purposes - replace with actual authentication
+            if (email && password) {
+                alert('Sign in functionality would be implemented here');
+                // window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
