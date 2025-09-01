@@ -74,7 +74,7 @@
                                     required
                                 />
                                 <div class="password-toggle">
-                                    <span class="toggle-icon" onclick="togglePassword()">👁️</span>
+                                    <span class="toggle-icon" onclick="togglePassword()"><img src="../../Assests/icons/eye.svg" alt="eye"></span>
                                 </div>
                             </div>
 
@@ -97,10 +97,10 @@
             
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                toggleIcon.textContent = '🙈';
+                toggleIcon.innerHTML = '<img src="../../Assests/icons/closed-eye.svg" alt="closed-eye">';
             } else {
                 passwordInput.type = 'password';
-                toggleIcon.textContent = '👁️';
+                toggleIcon.innerHTML = '<img src="../../Assests/icons/eye.svg" alt="eye">';
             }
         }
 
