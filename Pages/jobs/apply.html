@@ -42,11 +42,19 @@
                             </div>
                             <div class="input-group">
                                 <label for="cv">Upload CV</label>
-                                <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" required />
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" required />
+                                    <div class="file-input-trigger">Choose CV File</div>
+                                    <div class="file-name" id="cvFileName">No file chosen</div>
+                                </div>
                             </div>
                             <div class="input-group">
                                 <label for="motivation">Upload Motivational Letter</label>
-                                <input type="file" id="motivation" name="motivation" accept=".pdf,.doc,.docx" required />
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="motivation" name="motivation" accept=".pdf,.doc,.docx" required />
+                                    <div class="file-input-trigger">Choose Motivation Letter</div>
+                                    <div class="file-name" id="motivationFileName">No file chosen</div>
+                                </div>
                             </div>
                             <div class="input-group">
                                 <label for="extra">Additional Information</label>
@@ -63,6 +71,17 @@
         document.getElementById('applyForm').addEventListener('submit', function(e) {
             e.preventDefault();
             alert('Your application has been submitted!');
+        });
+
+        // Update file name display when files are selected
+        document.getElementById('cv').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+            document.getElementById('cvFileName').textContent = fileName;
+        });
+
+        document.getElementById('motivation').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+            document.getElementById('motivationFileName').textContent = fileName;
         });
     </script>
 </body>

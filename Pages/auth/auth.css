@@ -135,6 +135,69 @@ body {
     color: #a0aec0;
 }
 
+.input-group .file-input-wrapper {
+    position: relative;
+    margin-top: 6px;
+}
+
+.input-group input[type="file"] {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.input-group .file-input-trigger {
+    display: inline-block;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #f1683a 0%, #ff4500 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.input-group input[type="file"]:hover + .file-input-trigger {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(241, 104, 58, 0.2);
+}
+
+.input-group input[type="file"]:active + .file-input-trigger {
+    transform: translateY(0);
+}
+
+.file-name {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #718096;
+}
+.input-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f9f9f9;
+    color: #1a202c;
+    resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 6px;
+}
+.input-group textarea:focus {
+    outline: none;
+    border-color: #f1683a;
+    box-shadow: 0 0 0 3px rgba(241, 104, 58, 0.1);
+}
+
 .password-toggle {
     position: absolute;
     right: 12px;
