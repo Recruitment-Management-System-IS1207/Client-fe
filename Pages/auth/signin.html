@@ -29,6 +29,9 @@
                         <h2>Sign in to your account.</h2>
                         <p class="signin-subtitle">Please enter your email address and password to log in.</p>
 
+                        <!-- Alert messages -->
+                        <div id="alert-message" class="alert" style="display: none;"></div>
+
                         <form id="signinForm">
                             <div class="input-group">
                                 <label for="email">Email Address</label>
@@ -93,38 +96,125 @@
             });
         });
 
-        const form = document.getElementById('signinForm');
-        const adminLoginBtn = document.getElementById('adminLoginBtn');
-        
-        // Regular user login
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        function showAlert(message, type = 'error') {
+            const alertDiv = document.getElementById('alert-message');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(button, show, originalText) {
+            if (show) {
+                button.disabled = true;
+                button.textContent = 'Signing in...';
+            } else {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        function handleLogin(isAdmin = false) {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // Add your user authentication logic here
-            console.log('User sign in attempt:', { email, password });
-            
-            // For demo purposes - replace with actual authentication
-            if (email && password) {
-                window.location.href = '../../index.html';
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
             }
+            
+            const formData = new FormData();
+            formData.append('action', isAdmin ? 'admin_login' : 'login');
+            formData.append('email', email);
+            formData.append('password', password);
+            
+            const button = isAdmin ? document.getElementById('adminLoginBtn') : document.getElementById('userLoginBtn');
+            const originalText = button.textContent;
+            showLoading(button, true, originalText);
+            
+            fetch('../../includes/auth.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(button, false, originalText);
+                
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    
+                    // Redirect based on user type
+                    setTimeout(() => {
+                        if (isAdmin) {
+                            window.location.href = '../admin/dashboard.html';
+                        } else {
+                            window.location.href = '../../index.html';
+                        }
+                    }, 1500);
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showLoading(button, false, originalText);
+                console.error('Error:', error);
+                showAlert('Login failed. Please try again.', 'error');
+            });
+        }
+
+        // Regular user login
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin(false);
         });
 
         // Admin login
-        adminLoginBtn.addEventListener('click', function(e) {
+        document.getElementById('adminLoginBtn').addEventListener('click', function(e) {
             e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Add your admin authentication logic here
-            console.log('Admin sign in attempt:', { email, password });
-            
-            // For demo purposes - replace with actual authentication
-            if (email && password) {
-                window.location.href = '../admin/dashboard.html';
-            }
+            handleLogin(true);
         });
     </script>
+
+    <style>
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+            border: 3px solid #34495e !important;
+            box-shadow: 0 0 10px 2px rgba(52, 73, 94, 0.3) !important;
+        }
+
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%) !important;
+            border-color: #2c3e50 !important;
+        }
+    </style>
 </body>
 </html>
