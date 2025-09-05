@@ -61,7 +61,8 @@
                                 <a href="#" class="forgot-password">Forgot Password?</a>
                             </div>
 
-                            <button type="submit" class="signin-btn">Login</button>
+                            <button type="submit" class="signin-btn" id="userLoginBtn">Login as User</button>
+                            <button type="button" class="signin-btn admin-btn" id="adminLoginBtn">Login as Admin</button>
                         </form>
 
                         <div class="signup-link">
@@ -92,19 +93,36 @@
             });
         });
 
-        document.getElementById('signinForm').addEventListener('submit', function(e) {
+        const form = document.getElementById('signinForm');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        
+        // Regular user login
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // Add your authentication logic here
-            console.log('Sign in attempt:', { email, password });
+            // Add your user authentication logic here
+            console.log('User sign in attempt:', { email, password });
             
             // For demo purposes - replace with actual authentication
             if (email && password) {
-                alert('Sign in functionality would be implemented here');
-                // window.location.href = 'dashboard.html';
+                window.location.href = '../../index.html';
+            }
+        });
+
+        // Admin login
+        adminLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Add your admin authentication logic here
+            console.log('Admin sign in attempt:', { email, password });
+            
+            // For demo purposes - replace with actual authentication
+            if (email && password) {
+                window.location.href = '../admin/dashboard.html';
             }
         });
     </script>

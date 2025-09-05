@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - PathFinder</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="sidebar">
+            <div class="brand-logo">
+                <a href="../../index.html"><img src="../../Assests/image/pathfinder.png" alt="PathFinder Logo" /></a>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#"><span>Dashboard</span></a></li>
+                <li><a href="#"><span>Job Listings</span></a></li>
+                <li><a href="#"><span>Applications</span></a></li>
+                <li><a href="#"><span>Users</span></a></li>
+                <li><a href="#"><span>Reports</span></a></li>
+                <li class="logout"><a href="../auth/signin.html"><span>Logout</span></a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="admin-header">
+                <h1>Admin Dashboard</h1>
+                <div class="admin-profile">
+                    <span class="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Total Applications</h3>
+                    <p class="stat-number">150</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Jobs</h3>
+                    <p class="stat-number">45</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <p class="stat-number">1,250</p>
+                </div>
+                <div class="stat-card">
+                    <h3>New Applications</h3>
+                    <p class="stat-number">25</p>
+                </div>
+            </div>
+
+            <div class="recent-activities">
+                <h2>Recent Activities</h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <span class="activity-time">2 hours ago</span>
+                        <p>New job application received for Senior Software Engineer position</p>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-time">5 hours ago</span>
+                        <p>New user registration</p>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-time">1 day ago</span>
+                        <p>Job posting updated: Marketing Manager</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

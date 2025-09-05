@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center</title>
+    <link rel="stylesheet" href="../../../style.css">
+    <link rel="stylesheet" href="help.css">
+</head>
+<body>
+    <header>
+        <nav>
+             <a href="../../index.html">Home</a>
+            <a href="">Features</a>
+            <a href="../about/about.html">About</a>
+            <a href="#">Help</a>
+            <button onclick="window.location.href='../../../Pages/auth/signin.html'">Login</button>
+            <button onclick="window.location.href='../../../Pages/auth/signup.html'">Sign Up</button>
+        </nav>
+    </header>
+
+    <div class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Help Center</h1>
+                <p>Connecting workers, businesses, and opportunities in every industry.</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="help-main">
+        <div class="help-grid">
+            <!-- We're Here To Help -->
+            <div class="help-card">
+                <div class="help-icon">
+                    <img src="../../../Assests/icons/eye.svg" alt="Help Icon">
+                </div>
+                <h2>We're Here To Help</h2>
+                <p>Encountered an issue or have a question? Our dedicated team at PathFinder is ready to assist you.</p>
+            </div>
+
+            <!-- Immediate Assistance -->
+            <div class="help-card">
+                <div class="help-icon">
+                    <img src="../../../Assests/icons/eye.svg" alt="Chat Icon">
+                </div>
+                <h2>Immediate Assistance? Chat With Us</h2>
+                <p>Click on the chat icon at the bottom right of your screen to chat with one of our support agents.</p>
+            </div>
+
+            <!-- Reach Out Directly -->
+            <div class="help-card">
+                <div class="help-icon">
+                    <img src="../../../Assests/icons/eye.svg" alt="Contact Icon">
+                </div>
+                <h2>Reach Out Directly</h2>
+                <p>Prefer to send us an email or give us a call?</p>
+                <div class="contact-info">
+                    <p>Email: <a href="mailto:support@pathfinder.com">support@pathfinder.com</a></p>
+                    <p>Phone: <a href="tel:0112 855 920">0112 855 920</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <h2>What can we help you find?</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I post a job opening?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        To post a job opening, please contact our system administrators at admin@pathfinder.com with your job details. Our admin team will review and post the job listing on your behalf to ensure quality and consistency.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How long does it take to get a job posting approved?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Our admin team typically reviews and posts job listings within 24-48 hours of receiving the request. For urgent postings, please mention this in your email subject line.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What information should I include in my job posting request?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Please include: job title, company details, location, salary range, required qualifications, job description, responsibilities, benefits, and application deadline. The more detailed information you provide, the faster we can process your request.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How can I modify or remove a job posting?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        To modify or remove an existing job posting, email our admin team at admin@pathfinder.com with your request. Include the job ID or title and the specific changes needed. Updates are usually processed within 24 hours.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is there a limit to how many jobs I can post?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        There's no strict limit, but all postings are subject to admin review. Contact our admin team to discuss your recruitment needs, and they'll help create a posting schedule that works for your organization.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I track applications for my job postings?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Our admin team will forward all applications to your designated email address. For customized application tracking or reporting needs, please discuss with our admin team when submitting your job posting.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.parentElement;
+                    faqItem.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+<footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-message">
+                <h2>Find Your Dream Job</h2>
+                <p>Millions of opportunities. No registration fee needed.</p>
+                <div class="footer-social">
+                    <a href="#"><img src="../../../Assests/icons/facebook.svg" alt="Facebook" /></a>
+                    <a href="#"><img src="../../../Assests/icons/instagram.svg" alt="Instagram" /></a>
+                    <a href="#"><img src="../../../Assests/icons/twitter.svg" alt="Twitter" /></a>
+                </div>
+            </div>
+            <div class="footer-logo">
+                <img src="../../../Assests/image/pathfinder.png"alt="PathFinder Logo" />
+            </div>
+            <div class="footer-cta">
+              <a href="../auth/signup.html" class="footer-btn">Get Started for Free</a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <div class="footer-col">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Jobs</a></li>
+                    <li><a href="#">For the Record</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>COMMUNITIES</h4>
+                <ul>
+                    <li><a href="#">For Artists</a></li>
+                    <li><a href="#">Developers</a></li>
+                    <li><a href="#">Advertising</a></li>
+                    <li><a href="#">Investors</a></li>
+                    <li><a href="#">Vendors</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>USEFUL LINKS</h4>
+                <ul>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Web Player</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <ul class="footer-bottom-links">
+                <li><a href="#">Legal</a></li>
+                <li><a href="#">Privacy Center</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Cookies</a></li>
+                <li><a href="#">About Ads</a></li>
+            </ul>
+            <span class="footer-copyright">© 2025 PathFinder</span>
+        </div>
+    </footer>
+
+    <script src="../../app.js"></script>
+</body>
+</html>

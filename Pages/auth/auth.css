@@ -154,9 +154,9 @@ body {
 .input-group .file-input-trigger {
     display: inline-block;
     padding: 12px 20px;
-    background: linear-gradient(135deg, #f1683a 0%, #ff4500 100%);
-    color: white;
-    border: none;
+    background: transparent; /* Remove fill */
+    color: #ff4500; /* Use border color for text */
+    border: 3px solid #ff4500; /* Add colored border */
     border-radius: 8px;
     font-size: 0.95rem;
     font-weight: 500;
@@ -166,12 +166,18 @@ body {
     text-align: center;
 }
 
-.input-group input[type="file"]:hover + .file-input-trigger {
+.input-group .file-input-trigger:hover {
+    background: rgba(255, 69, 0, 0.08); /* Slight highlight on hover */
+    color: #ff4500;
+    border-color: #f1683a;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(241, 104, 58, 0.2);
 }
 
-.input-group input[type="file"]:active + .file-input-trigger {
+.input-group .file-input-trigger:active {
+    background: transparent;
+    color: #ff4500;
+    cursor:pointer;
     transform: translateY(0);
 }
 
@@ -266,6 +272,21 @@ body {
     transform: translateY(0);
 }
 
+.signin-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #f1683a 0%, #ff4500 100%);
+    color: white;
+    border: 3px solid #ff4500; /* Highlight with a thicker border */
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 24px;
+    box-shadow: 0 0 10px 2px rgba(255, 69, 0, 0.3); /* Add glow effect */
+}
+
 .signup-btn {
     width: 100%;
     padding: 14px;
@@ -278,6 +299,7 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     margin-bottom: 24px;
+    box-shadow: 0 0 10px 2px rgba(255, 69, 0, 0.3);
 }
 
 .signup-btn:hover {
