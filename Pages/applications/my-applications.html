@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - PathFinder</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../jobs/jobs.css">
+</head>
+<body>
+    <header>
+        <nav>
+             <a href="../../index.html">Home</a>
+            <a href="../Features/help/feature.html">Features</a>
+            <a href="../Features/about/about.html">About</a>
+            <a href="../Features/help/help.html">Help</a>
+            <button onclick="checkLoginAndRedirect()">Login</button>
+            <button onclick="window.location.href='../auth/signup.html'">Sign Up</button>
+        </nav>
+    </header>
+
+
+        <div class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>My Dashboard</h1>
+                <p>A quick glance at your applications.</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="applications-container">
+        <div class="applications-header">
+            <h1>My Job Applications</h1>
+            <div class="applications-summary" id="applicationsSummary">
+                <div class="summary-item">
+                    <span class="summary-number" id="totalApps">0</span>
+                    <span class="summary-label">Total Applications</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-number pending" id="pendingApps">0</span>
+                    <span class="summary-label">Pending Review</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-number reviewed" id="reviewedApps">0</span>
+                    <span class="summary-label">Under Review</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login required message -->
+        <div id="loginRequired" class="login-required" style="display: none;">
+            <div class="login-message">
+                <h2>Login Required</h2>
+                <p>Please log in to view your job applications.</p>
+                <button onclick="window.location.href='../auth/signin.html'" class="login-btn">Sign In</button>
+            </div>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingState" class="loading-state" style="display: none;">
+            <p>Loading your applications...</p>
+        </div>
+
+        <!-- Applications list -->
+        <div id="applicationsContainer" class="applications-list" style="display: none;">
+            <!-- Filter tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterApplications('all')">All Applications</button>
+                <button class="filter-tab" onclick="filterApplications('pending')">Pending</button>
+                <button class="filter-tab" onclick="filterApplications('reviewed')">Under Review</button>
+                <button class="filter-tab" onclick="filterApplications('shortlisted')">Shortlisted</button>
+                <button class="filter-tab" onclick="filterApplications('rejected')">Rejected</button>
+                <button class="filter-tab" onclick="filterApplications('hired')">Hired</button>
+            </div>
+
+            <!-- Applications grid -->
+            <div id="applicationsList" class="applications-grid">
+                <!-- Applications will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-message">
+                <h2>No Applications Yet</h2>
+                <p>You haven't submitted any job applications yet. Start exploring opportunities!</p>
+                <button onclick="window.location.href='../../index.html'" class="browse-jobs-btn">Browse Jobs</button>
+            </div>
+        </div>
+
+        <!-- Error state -->
+        <div id="errorState" class="error-state" style="display: none;">
+            <div class="error-message">
+                <h2>Unable to Load Applications</h2>
+                <p>There was an error loading your applications. Please try again.</p>
+                <button onclick="loadApplications()" class="retry-btn">Try Again</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-message">
+                <h2>Find Your Dream Job</h2>
+                <p>Millions of opportunities. No registration fee needed.</p>
+                <div class="footer-social">
+                    <a href="#"><img src="../../Assests/icons/facebook.svg" alt="Facebook" /></a>
+                    <a href="#"><img src="../../Assests/icons/instagram.svg" alt="Instagram" /></a>
+                    <a href="#"><img src="../../Assests/icons/twitter.svg" alt="Twitter" /></a>
+                </div>
+            </div>
+            <div class="footer-logo">
+                <img src="../../Assests/image/pathfinder.png"alt="PathFinder Logo" />
+            </div>
+            <div class="footer-cta">
+                <a href="../auth/signup.html" class="footer-btn">Get Started for Free</a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <div class="footer-col">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Jobs</a></li>
+                    <li><a href="#">For the Record</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>COMMUNITIES</h4>
+                <ul>
+                    <li><a href="#">For Artists</a></li>
+                    <li><a href="#">Developers</a></li>
+                    <li><a href="#">Advertising</a></li>
+                    <li><a href="#">Investors</a></li>
+                    <li><a href="#">Vendors</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>USEFUL LINKS</h4>
+                <ul>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Web Player</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <ul class="footer-bottom-links">
+                <li><a href="#">Legal</a></li>
+                <li><a href="#">Privacy Center</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Cookies</a></li>
+                <li><a href="#">About Ads</a></li>
+            </ul>
+            <span class="footer-copyright">© 2025 PathFinder</span>
+        </div>
+    </footer>
+
+    <script src="../../app.js"></script>
+    <script>
+        let allApplications = [];
+        let currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginAndLoadApplications();
+        });
+
+        // Check if user is logged in and load applications
+        async function checkLoginAndLoadApplications() {
+            try {
+                const response = await fetch('../../includes/session.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=check_session'
+                });
+                const data = await response.json();
+                
+                if (data.logged_in && data.user_info && data.user_info.type === 'user') {
+                    loadApplications();
+                } else {
+                    showLoginRequired();
+                }
+            } catch (error) {
+                console.error('Error checking login status:', error);
+                showError();
+            }
+        }
+
+        // Load user applications
+        async function loadApplications() {
+            showLoading(true);
+            
+            try {
+                const response = await fetch('../../api/applications.php?action=user');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allApplications = data.applications;
+                    displayApplications(allApplications);
+                    updateSummary(allApplications);
+                    showApplicationsContainer();
+                } else if (data.applications && data.applications.length === 0) {
+                    showEmpty();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                showError('Failed to load applications');
+            }
+        }
+
+        // Display applications
+        function displayApplications(applications) {
+            const container = document.getElementById('applicationsList');
+            
+            if (!applications || applications.length === 0) {
+                showEmpty();
+                return;
+            }
+            
+            container.innerHTML = applications.map(app => createApplicationCard(app)).join('');
+        }
+
+        // Create application card HTML
+        function createApplicationCard(application) {
+            const statusColor = getStatusColor(application.status);
+            const statusIcon = getStatusIcon(application.status);
+            
+            return `
+                <div class="application-card" data-status="${application.status}">
+                    <div class="application-header">
+                        <div class="job-info">
+                            <h3>${escapeHtml(application.job_title)}</h3>
+                            <p class="company">${escapeHtml(application.company)}</p>
+                            <p class="location">📍 ${escapeHtml(application.location)}</p>
+                        </div>
+                        <div class="application-status">
+                            <span class="status-badge ${statusColor}">
+                                ${statusIcon} ${application.status_label}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="application-details">
+                        <div class="application-meta">
+                            <span class="applied-date">Applied ${application.applied_ago}</span>
+                            <span class="application-id">ID: #${application.id}</span>
+                        </div>
+                        <div class="application-files">
+                            <span class="file-info">📄 CV Submitted</span>
+                            <span class="file-info">📝 Cover Letter Submitted</span>
+                        </div>
+                    </div>
+                    <div class="application-actions">
+                        <button onclick="viewApplication(${application.id})" class="view-btn">View Details</button>
+                        <button onclick="viewJob(${application.job_id})" class="job-btn">View Job</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Filter applications
+        function filterApplications(status) {
+            currentFilter = status;
+            
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter and display
+            let filtered = allApplications;
+            if (status !== 'all') {
+                filtered = allApplications.filter(app => app.status === status);
+            }
+            
+            displayApplications(filtered);
+        }
+
+        // Update summary statistics
+        function updateSummary(applications) {
+            document.getElementById('totalApps').textContent = applications.length;
+            
+            const statusCounts = applications.reduce((counts, app) => {
+                counts[app.status] = (counts[app.status] || 0) + 1;
+                return counts;
+            }, {});
+            
+            document.getElementById('pendingApps').textContent = statusCounts.pending || 0;
+            document.getElementById('reviewedApps').textContent = statusCounts.reviewed || 0;
+        }
+
+        // View application details
+        async function viewApplication(applicationId) {
+            try {
+                const response = await fetch(`../../api/applications.php?action=get&id=${applicationId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    showApplicationModal(data.application);
+                } else {
+                    alert('Failed to load application details');
+                }
+            } catch (error) {
+                console.error('Error loading application:', error);
+                alert('Failed to load application details');
+            }
+        }
+
+        // Show application details modal
+        function showApplicationModal(application) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content application-modal">
+                    <div class="modal-header">
+                        <h3>Application Details</h3>
+                        <button onclick="closeModal(this)" class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="application-detail-section">
+                            <h4>Job Information</h4>
+                            <p><strong>Position:</strong> ${escapeHtml(application.job_title)}</p>
+                            <p><strong>Company:</strong> ${escapeHtml(application.company)}</p>
+                            <p><strong>Location:</strong> ${escapeHtml(application.location)}</p>
+                        </div>
+                        
+                        <div class="application-detail-section">
+                            <h4>Application Status</h4>
+                            <p class="status-info">
+                                <span class="status-badge ${getStatusColor(application.status)}">
+                                    ${getStatusIcon(application.status)} ${application.status_label}
+                                </span>
+                            </p>
+                            <p><strong>Applied:</strong> ${application.applied_ago}</p>
+                        </div>
+                        
+                        <div class="application-detail-section">
+                            <h4>Your Information</h4>
+                            <p><strong>Name:</strong> ${escapeHtml(application.full_name)}</p>
+                            <p><strong>Email:</strong> ${escapeHtml(application.email)}</p>
+                            <p><strong>Phone:</strong> ${escapeHtml(application.phone)}</p>
+                        </div>
+                        
+                        <div class="application-detail-section">
+                            <h4>Additional Information</h4>
+                            <p>${escapeHtml(application.additional_info).replace(/\n/g, '<br>')}</p>
+                        </div>
+                        
+                        <div class="application-detail-section">
+                            <h4>Submitted Documents</h4>
+                            <div class="document-list">
+                                <div class="document-item">
+                                    <span class="document-icon">📄</span>
+                                    <span>CV/Resume - ${application.cv_file}</span>
+                                </div>
+                                <div class="document-item">
+                                    <span class="document-icon">📝</span>
+                                    <span>Cover Letter - ${application.motivation_file}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // View job details
+        function viewJob(jobId) {
+            window.open(`../jobs/job-details.html?id=${jobId}`, '_blank');
+        }
+
+        // Close modal
+        function closeModal(button) {
+            const modal = button.closest('.modal');
+            modal.remove();
+        }
+
+        // Get status color class
+        function getStatusColor(status) {
+            const colors = {
+                pending: 'status-pending',
+                reviewed: 'status-reviewed',
+                shortlisted: 'status-shortlisted',
+                rejected: 'status-rejected',
+                hired: 'status-hired'
+            };
+            return colors[status] || 'status-pending';
+        }
+
+        // Get status icon
+        function getStatusIcon(status) {
+            const icons = {
+                pending: '⏳',
+                reviewed: '👁️',
+                shortlisted: '⭐',
+                rejected: '❌',
+                hired: '🎉'
+            };
+            return icons[status] || '⏳';
+        }
+
+        // UI State Management
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+        }
+
+        function showLoginRequired() {
+            document.getElementById('loginRequired').style.display = 'block';
+            hideAllSections();
+        }
+
+        function showApplicationsContainer() {
+            document.getElementById('applicationsContainer').style.display = 'block';
+            hideOtherSections();
+        }
+
+        function showEmpty() {
+            document.getElementById('emptyState').style.display = 'block';
+            hideOtherSections();
+        }
+
+        function showError(message) {
+            document.getElementById('errorState').style.display = 'block';
+            if (message) {
+                document.querySelector('#errorState .error-message p').textContent = message;
+            }
+            hideOtherSections();
+        }
+
+        function hideAllSections() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('applicationsContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+        }
+
+        function hideOtherSections() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('loginRequired').style.display = 'none';
+        }
+
+        // Check login and redirect function for nav
+        function checkLoginAndRedirect() {
+            window.location.href = '../auth/signin.html';
+        }
+
+        // Utility function
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+    </script>
+
+    <style>
+        .applications-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .applications-header {
+            margin-bottom: 40px;
+        }
+
+        .applications-header h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .applications-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .summary-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .summary-number.pending {
+            color: #f39c12;
+        }
+
+        .summary-number.reviewed {
+            color: #3498db;
+        }
+
+        .summary-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .login-required, .loading-state, .empty-state, .error-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .login-message, .empty-message, .error-message {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-btn, .browse-jobs-btn, .retry-btn {
+            background: #f1683a;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover, .browse-jobs-btn:hover, .retry-btn:hover {
+            background: #ff4500;
+            transform: translateY(-2px);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .filter-tab {
+            padding: 12px 20px;
+            background: #f8f9fa;
+            color: #666;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab:hover {
+            background: #e9ecef;
+        }
+
+        .filter-tab.active {
+            background: #f1683a;
+            color: white;
+        }
+
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .application-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .job-info h3 {
+            color: #2c3e50;
+            margin: 0 0 8px 0;
+            font-size: 1.3rem;
+        }
+
+        .job-info .company {
+            color: #f1683a;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .job-info .location {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-reviewed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-shortlisted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-hired {
+            background: #e2e3ff;
+            color: #383d41;
+        }
+
+        .application-details {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .application-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .application-files {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .application-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .view-btn, .job-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn {
+            background: #f1683a;
+            color: white;
+            border-color: #f1683a;
+        }
+
+        .view-btn:hover {
+            background: #ff4500;
+            border-color: #ff4500;
+        }
+
+        .job-btn {
+            background: transparent;
+            color: #f1683a;
+            border-color: #f1683a;
+        }
+
+        .job-btn:hover {
+            background: #f1683a;
+            color: white;
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .application-modal {
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 25px 25px 0 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .application-detail-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .application-detail-section:last-child {
+            border-bottom: none;
+        }
+
+        .application-detail-section h4 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1rem;
+        }
+
+        .application-detail-section p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .status-info {
+            margin: 15px 0;
+        }
+
+        .document-list {
+            margin-top: 10px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .document-icon {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .applications-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .application-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .application-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .filter-tabs {
+                flex-wrap: wrap;
+            }
+
+            .application-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>
