@@ -4,69 +4,276 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - PathFinder</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="admin-container">
-        <nav class="sidebar">
-            <div class="brand-logo">
-                <a href="../../index.html"><img src="../../Assests/image/pathfinder.png" alt="PathFinder Logo" /></a>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <img src="../../Assests/image/pathfinder.png" alt="PathFinder Logo">
+                    
+                </div>
             </div>
-            <ul class="nav-links">
-                <li class="active"><a href="#"><span>Dashboard</span></a></li>
-                <li><a href="#"><span>Job Listings</span></a></li>
-                <li><a href="#"><span>Applications</span></a></li>
-                <li><a href="#"><span>Users</span></a></li>
-                <li><a href="#"><span>Reports</span></a></li>
-                <li class="logout"><a href="../auth/signin.html"><span>Logout</span></a></li>
-            </ul>
-        </nav>
 
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item active">
+                        <a href="#" class="nav-link" onclick="showSection('dashboard')" data-section="dashboard">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('applications')" data-section="applications">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Applications</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('jobs')" data-section="jobs">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Jobs</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('add-job')" data-section="add-job">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Add Job</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-footer">
+                    <button class="logout-btn" onclick="adminLogout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
         <main class="main-content">
-            <header class="admin-header">
-                <h1>Admin Dashboard</h1>
-                <div class="admin-profile">
-                    <span class="admin-name">Admin</span>
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="content-section active">
+                <div class="section-header">
+                    <h1 class="section-title">Dashboard Overview</h1>
+                    <p class="section-subtitle">Monitor your recruitment platform</p>
                 </div>
-            </header>
 
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <h3>Total Applications</h3>
-                    <p class="stat-number">150</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Active Jobs</h3>
-                    <p class="stat-number">45</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Users</h3>
-                    <p class="stat-number">1,250</p>
-                </div>
-                <div class="stat-card">
-                    <h3>New Applications</h3>
-                    <p class="stat-number">25</p>
-                </div>
-            </div>
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="totalApplications">-</div>
+                            <div class="stat-label">Total Applications</div>
+                        </div>
+                    </div>
 
-            <div class="recent-activities">
-                <h2>Recent Activities</h2>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <span class="activity-time">2 hours ago</span>
-                        <p>New job application received for Senior Software Engineer position</p>
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="activeJobs">-</div>
+                            <div class="stat-label">Active Jobs</div>
+                        </div>
                     </div>
-                    <div class="activity-item">
-                        <span class="activity-time">5 hours ago</span>
-                        <p>New user registration</p>
+
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="pendingApplications">-</div>
+                            <div class="stat-label">Pending Reviews</div>
+                        </div>
                     </div>
-                    <div class="activity-item">
-                        <span class="activity-time">1 day ago</span>
-                        <p>Job posting updated: Marketing Manager</p>
+
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="monthlyApplications">-</div>
+                            <div class="stat-label">This Month</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Recent Activity -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Applications</h2>
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="card-content">
+                        <div id="recentApplications" class="activity-list">
+                            <div class="loading-spinner">Loading recent applications...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Applications Section -->
+            <section id="applicationsSection" class="content-section">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title">Job Applications</h1>
+                        <p class="section-subtitle">Manage and review applications</p>
+                    </div>
+                    <div class="section-actions">
+                        <select id="statusFilter" class="filter-select" onchange="filterApplications()">
+                            <option value="all">All Applications</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="shortlisted">Shortlisted</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="hired">Hired</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-content">
+                        <div id="applicationsList" class="applications-grid">
+                            <div class="loading-spinner">Loading applications...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Jobs Section -->
+            <section id="jobsSection" class="content-section">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title">Manage Jobs</h1>
+                        <p class="section-subtitle">Control your job postings</p>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn-primary" onclick="showSection('add-job')">
+                            <i class="fas fa-plus"></i>
+                            Add New Job
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-content">
+                        <div id="jobsList" class="jobs-grid">
+                            <div class="loading-spinner">Loading jobs...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Add Job Section -->
+            <section id="add-jobSection" class="content-section">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title">Add New Job</h1>
+                        <p class="section-subtitle">Create a new job posting</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-content">
+                        <form id="addJobForm" class="job-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Job Title *</label>
+                                    <input type="text" class="form-input" name="title" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Company *</label>
+                                    <input type="text" class="form-input" name="company" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Location *</label>
+                                    <input type="text" class="form-input" name="location" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Job Type *</label>
+                                    <select class="form-select" name="job_type" required>
+                                        <option value="">Select Type</option>
+                                        <option value="Full-time">Full-time</option>
+                                        <option value="Part-time">Part-time</option>
+                                        <option value="Contract">Contract</option>
+                                        <option value="Internship">Internship</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Category *</label>
+                                    <select id="categorySelect" class="form-select" name="category_id" required>
+                                        <option value="">Select Category</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Salary Range</label>
+                                    <div class="salary-range">
+                                        <input type="number" class="form-input" name="salary_min" placeholder="Min">
+                                        <span class="range-separator">to</span>
+                                        <input type="number" class="form-input" name="salary_max" placeholder="Max">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Job Description *</label>
+                                <textarea class="form-textarea" name="description" rows="6" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Requirements</label>
+                                <textarea class="form-textarea" name="requirements" rows="4"></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-plus"></i>
+                                    Add Job
+                                </button>
+                                <button type="button" class="btn-secondary" onclick="clearForm()">
+                                    <i class="fas fa-times"></i>
+                                    Clear Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
+
+    <!-- Application Detail Modal -->
+    <div id="applicationModal" class="modal">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Application Details</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div id="applicationDetails" class="application-details">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
 </body>
 </html>

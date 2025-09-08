@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - PathFinder</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../jobs/jobs.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Navigation Scripts -->
+    <script src="../../includes/nav-replacement.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Navigation will be dynamically replaced by nav-replacement.js -->
+        </nav>
+    </header>
+
+    <div class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>My Profile</h1>
+                <p>Manage your account settings</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="profile-container">
+        <!-- Login required message -->
+        <div id="loginRequired" class="login-required" style="display: none;">
+            <div class="login-message">
+                <h2>Login Required</h2>
+                <p>Please log in to view your profile.</p>
+                <button onclick="window.location.href='../auth/signin.html'" class="login-btn">Sign In</button>
+            </div>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingState" class="loading-state" style="display: none;">
+            <p>Loading your profile...</p>
+        </div>
+
+        <!-- Profile Form -->
+        <div id="profileSection" class="profile-section" style="display: none;">
+            <form id="profileForm" class="profile-form">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="newPassword" name="newPassword">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword">
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="save-btn">Save Changes</button>
+                    <button type="button" class="delete-btn" onclick="confirmDeleteAccount()">Delete Account</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="success-message" style="display: none;">
+            <p>Your profile has been updated successfully!</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <p></p>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginAndLoadProfile();
+        });
+
+        async function checkLoginAndLoadProfile() {
+            try {
+                const response = await fetch('../../includes/session.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=check_session'
+                });
+                const data = await response.json();
+                
+                if (data.logged_in && data.user_info) {
+                    loadProfile();
+                } else {
+                    showLoginRequired();
+                }
+            } catch (error) {
+                console.error('Error checking login status:', error);
+                showError('Failed to verify login status');
+            }
+        }
+
+        async function loadProfile() {
+            showLoading(true);
+            try {
+                const response = await fetch('../../api/profile.php?action=get');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('fullName').value = data.user.full_name || '';
+                    document.getElementById('email').value = data.user.email || '';
+                    document.getElementById('phone').value = data.user.phone || '';
+                    showProfileSection();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showError('Failed to load profile');
+            }
+            showLoading(false);
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('action', 'update');
+            formData.append('fullName', document.getElementById('fullName').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phone', document.getElementById('phone').value);
+            if (newPassword) {
+                formData.append('newPassword', newPassword);
+            }
+
+            try {
+                const response = await fetch('../../api/profile.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Profile updated successfully');
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showError('Failed to update profile');
+            }
+        });
+
+        function confirmDeleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                deleteAccount();
+            }
+        }
+
+        async function deleteAccount() {
+            try {
+                const response = await fetch('../../api/profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=delete'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Account deleted successfully');
+                    window.location.href = '../auth/signin.html';
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                showError('Failed to delete account');
+            }
+        }
+
+        // UI Helper Functions
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+        }
+
+        function showLoginRequired() {
+            document.getElementById('loginRequired').style.display = 'block';
+            document.getElementById('profileSection').style.display = 'none';
+        }
+
+        function showProfileSection() {
+            document.getElementById('profileSection').style.display = 'block';
+            document.getElementById('loginRequired').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function checkLoginAndRedirect() {
+            window.location.href = '../auth/signin.html';
+        }
+    </script>
+
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .save-btn, .delete-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: #f1683a;
+            color: white;
+            flex: 2;
+        }
+
+        .save-btn:hover {
+            background: #ff4500;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            flex: 1;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .success-message, .error-message {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .login-required, .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .login-message {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-btn {
+            background: #f1683a;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #ff4500;
+        }
+    </style>
+</body>
+</html>

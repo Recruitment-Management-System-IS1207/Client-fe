@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Jobs - PathFinder</title>
+    <title>Agriculture Jobs - PathFinder</title>
     <link rel="stylesheet" href="../../style.css">
     <link rel="stylesheet" href="jobs.css">
 </head>
@@ -11,19 +11,19 @@
     <header>
         <nav>
              <a href="../../index.html">Home</a>
-            <a href="">Features</a>
-            <a href="">About</a>
-            <a href="">Help</a>
-            <button onclick="window.location.href='../../Pages/auth/signin.html'">Login</button>
-            <button onclick="window.location.href='../../Pages/auth/signup.html'">Sign Up</button>
+            <a href="../Features/help/feature.html">Features</a>
+            <a href="../Features/about/about.html">About</a>
+            <a href="../Features/help/help.html">Help</a>
+            <button onclick="window.location.href='../auth/signin.html'">Login</button>
+            <button onclick="window.location.href='../auth/signup.html'">Sign Up</button>
         </nav>
     </header>
 
     <div class="hero-section">
         <div class="hero-container">
             <div class="hero-content">
-                <h1>Where Engineering Careers are Built</h1>
-                <p>We bring you the best engineering jobs from top companies. Discover opportunities, connect with employers, and build your future with PathFinder.</p>
+                <h1>Agriculture & Farming Careers</h1>
+                <p>Discover opportunities in sustainable agriculture, farming, and agribusiness. Grow your career with PathFinder.</p>
                 <div class="hero-buttons">
                     <a href="#jobs" class="hero-btn primary">Find Jobs</a>
                     <a href="#upload" class="hero-btn secondary">Upload Resume</a>
@@ -32,80 +32,39 @@
         </div>
     </div>
 
-    <main class="jobs-container">
-        <h1>Engineering Jobs</h1>
-        <div class="job-listings">
-            <div class="job-card">
-                <h2>Senior Software Engineer</h2>
-                <div class="company">Tech Solutions Inc.</div>
-                <div class="location">New York, NY</div>
-                <p class="description">Looking for an experienced software engineer to lead development of cloud-based applications...</p>
-                <div class="details">
-                    <span> $120K - $160K</span>
-                    <span> Full-time</span>
-                </div>
-                <button class="apply-btn" onclick="window.location.href='apply.html'">Apply Now</button>
+    <main class="jobs-container" id="jobs">
+        <div class="jobs-header">
+            <h1>Agriculture Jobs</h1>
+            <div class="jobs-filter">
+                <input type="text" id="searchInput" placeholder="Search agriculture jobs..." />
+                <button onclick="searchJobs()">Search</button>
             </div>
-            <div class="job-card">
-                <h2>Mechanical Engineer</h2>
-                <div class="company">Industrial Innovations Corp</div>
-                <div class="location">Chicago, IL</div>
-                <p class="description">Design and develop mechanical systems and products for industrial applications...</p>
-                <div class="details">
-                    <span> $90K - $130K</span>
-                    <span> Full-time</span>
-                </div>
-                <button class="apply-btn" onclick="window.location.href='apply.html'">Apply Now</button>
-            </div>
-            <div class="job-card">
-                <h2>Civil Engineer</h2>
-                <div class="company">BuildWell Construction</div>
-                <div class="location"> Los Angeles, CA</div>
-                <p class="description">Seeking a civil engineer to oversee infrastructure projects and coordinate with contractors...</p>
-                <div class="details">
-                    <span> $85K - $120K</span>
-                    <span> Full-time</span>
-                </div>
-                <button class="apply-btn" onclick="window.location.href='apply.html'">Apply Now</button>
-            </div>
-             <div class="job-card">
-                <h2>Senior Software Engineer</h2>
-                <div class="company">Tech Solutions Inc.</div>
-                <div class="location">New York, NY</div>
-                <p class="description">Looking for an experienced software engineer to lead development of cloud-based applications...</p>
-                <div class="details">
-                    <span> $120K - $160K</span>
-                    <span> Full-time</span>
-                </div>
-                <button class="apply-btn" onclick="window.location.href='apply.html'">Apply Now</button>
-            </div>
-            <div class="job-card">
-                <h2>Mechanical Engineer</h2>
-                <div class="company">Industrial Innovations Corp</div>
-                <div class="location">Chicago, IL</div>
-                <p class="description">Design and develop mechanical systems and products for industrial applications...</p>
-                <div class="details">
-                    <span> $90K - $130K</span>
-                    <span> Full-time</span>
-                </div>
-                <button class="apply-btn" onclick="window.location.href='apply.html'">Apply Now</button>
-            </div>
-            <div class="job-card">
-                <h2>Civil Engineer</h2>
-                <div class="company">BuildWell Construction</div>
-                <div class="location"> Los Angeles, CA</div>
-                <p class="description">Seeking a civil engineer to oversee infrastructure projects and coordinate with contractors...</p>
-                <div class="details">
-                    <span> $85K - $120K</span>
-                    <span> Full-time</span>
-                </div>
-                <button class="apply-btn" onclick="window.location.href='apply.html'">Apply Now</button>
-            </div>
+        </div>
+        
+        <!-- Loading state -->
+        <div id="loadingState" class="loading-state">
+            <p>Loading agriculture jobs...</p>
+        </div>
+        
+        <!-- Error state -->
+        <div id="errorState" class="error-state" style="display: none;">
+            <p>Failed to load jobs. Please try again later.</p>
+            <button onclick="loadJobs()">Retry</button>
+        </div>
+        
+        <!-- Jobs listings -->
+        <div class="job-listings" id="jobListings">
+            <!-- Jobs will be loaded here dynamically -->
+        </div>
+        
+        <!-- Empty state -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <p>No agriculture jobs found. Try searching for different keywords.</p>
         </div>
     </main>
 
     <!-- Footer Section -->
-<footer class="site-footer">
+    <footer class="site-footer">
         <div class="footer-top">
             <div class="footer-message">
                 <h2>Find Your Dream Job</h2>
@@ -120,7 +79,7 @@
                 <img src="../../Assests/image/pathfinder.png"alt="PathFinder Logo" />
             </div>
             <div class="footer-cta">
-              <a href="../auth/signup.html" class="footer-btn">Get Started for Free</a>
+                <a href="../auth/signup.html" class="footer-btn">Get Started for Free</a>
             </div>
         </div>
         <div class="footer-links">
@@ -163,5 +122,153 @@
     </footer>
 
     <script src="../../app.js"></script>
+    <script src="jobs-common.js"></script>
+    <script>
+        // Set category for this page
+        const CATEGORY_SLUG = 'agriculture';
+        const CATEGORY_NAME = 'Agriculture';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeJobsPage(CATEGORY_SLUG, CATEGORY_NAME);
+        });
+    </script>
+
+    <style>
+        /* Include the same dynamic styles */
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .jobs-filter {
+            display: flex;
+            gap: 10px;
+        }
+
+        .jobs-filter input {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            min-width: 300px;
+        }
+
+        .jobs-filter input:focus {
+            outline: none;
+            border-color: #f1683a;
+            box-shadow: 0 0 0 3px rgba(241, 104, 58, 0.1);
+        }
+
+        .jobs-filter button {
+            padding: 10px 20px;
+            background: #f1683a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .jobs-filter button:hover {
+            background: #ff4500;
+        }
+
+        .loading-state, .error-state, .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .error-state button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #f1683a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .job-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .job-category {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .job-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 16px 0 20px 0;
+        }
+
+        .job-meta {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            color: #f1683a;
+            border: 2px solid #f1683a;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background: #f1683a;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .jobs-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .jobs-filter {
+                flex-direction: column;
+            }
+
+            .jobs-filter input {
+                min-width: auto;
+            }
+
+            .job-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <script src="../../includes/nav-replacement.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Job</title>
+    <title>Apply for Job - PathFinder</title>
     <link rel="stylesheet" href="../auth/auth.css">
 </head>
 <body>
@@ -22,67 +22,577 @@
                         </div>
                     </div>
                     <div class="signin-form">
-                        <h2>Apply for this Job</h2>
+                        <!-- Job Info Display -->
+                        <div id="jobInfo" class="job-info" style="display: none;">
+                            <h2>Apply for <span id="jobTitleDisplay"></span></h2>
+                            <div class="job-summary">
+                                <p><strong>Company:</strong> <span id="companyDisplay"></span></p>
+                                <p><strong>Location:</strong> <span id="locationDisplay"></span></p>
+                                <p><strong>Type:</strong> <span id="jobTypeDisplay"></span></p>
+                            </div>
+                        </div>
+
+                        <!-- Default header when no job selected -->
+                        <div id="defaultHeader">
+                            <h2>Apply for this Job</h2>
+                            <p class="signin-subtitle">Fill out the form below to submit your application.</p>
+                        </div>
+
+                        <!-- Alert messages -->
+                        <div id="alert-message" class="alert" style="display: none;"></div>
+
                         <form id="applyForm" enctype="multipart/form-data">
+                            <input type="hidden" id="jobIdInput" name="job_id" />
+                            
                             <div class="input-group">
-                                <label for="fullname">Full Name</label>
-                                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required />
+                                <label for="fullname">Full Name *</label>
+                                <input type="text" id="fullname" name="full_name" placeholder="Enter your full name" required />
                             </div>
+                            
                             <div class="input-group">
-                                <label for="address">Address</label>
-                                <input type="text" id="address" name="address" placeholder="Enter your address" required />
+                                <label for="address">Address *</label>
+                                <textarea id="address" name="address" rows="3" placeholder="Enter your complete address" required></textarea>
                             </div>
+                            
                             <div class="input-group">
-                                <label for="tel">Telephone Number</label>
-                                <input type="tel" id="tel" name="tel" placeholder="Enter your telephone number" required />
+                                <label for="tel">Phone Number *</label>
+                                <input type="tel" id="tel" name="phone" placeholder="Enter your phone number" required />
                             </div>
+                            
                             <div class="input-group">
-                                <label for="email">Email Address</label>
+                                <label for="email">Email Address *</label>
                                 <input type="email" id="email" name="email" placeholder="Enter your email address" required />
                             </div>
+                            
                             <div class="input-group">
-                                <label for="cv">Upload CV</label>
+                                <label for="cv">Upload CV/Resume *</label>
                                 <div class="file-input-wrapper">
                                     <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" required />
                                     <div class="file-input-trigger">Choose CV File</div>
                                     <div class="file-name" id="cvFileName">No file chosen</div>
+                                    <div class="file-info">Accepted formats: PDF, DOC, DOCX (Max 5MB)</div>
                                 </div>
                             </div>
+                            
                             <div class="input-group">
-                                <label for="motivation">Upload Motivational Letter</label>
+                                <label for="motivation">Upload Cover Letter *</label>
                                 <div class="file-input-wrapper">
                                     <input type="file" id="motivation" name="motivation" accept=".pdf,.doc,.docx" required />
-                                    <div class="file-input-trigger">Choose Motivation Letter</div>
+                                    <div class="file-input-trigger">Choose Cover Letter</div>
                                     <div class="file-name" id="motivationFileName">No file chosen</div>
+                                    <div class="file-info">Accepted formats: PDF, DOC, DOCX (Max 5MB)</div>
                                 </div>
                             </div>
+                            
                             <div class="input-group">
-                                <label for="extra">Additional Information</label>
-                                <textarea id="extra" name="extra" rows="4" placeholder="Write something about yourself or your motivation..." required></textarea>
+                                <label for="additional_info">Why are you interested in this position? *</label>
+                                <textarea id="additional_info" name="additional_info" rows="6" 
+                                    placeholder="Tell us about your motivation, relevant experience, and why you'd be a great fit for this role..." required></textarea>
                             </div>
-                            <button type="submit" class="signin-btn">Submit Application</button>
+                            
+                            <!-- Terms and conditions -->
+                            <div class="input-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="termsAccept" required />
+                                    <span class="checkmark"></span>
+                                    I agree to the <a href="#" target="_blank">Terms and Conditions</a> and <a href="#" target="_blank">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <button type="submit" class="signin-btn" id="submitBtn">
+                                <span id="submitText">Submit Application</span>
+                                <span id="submitLoader" style="display: none;">Submitting...</span>
+                            </button>
                         </form>
+                        
+                        <div class="signup-link">
+                            <p><a href="javascript:history.back()">← Back to Job Listing</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Application Submitted Successfully! </h3>
+            </div>
+            <div class="modal-body">
+                <p>Thank you for your application. We have received your documents and will review them shortly.</p>
+                <p><strong>Next Steps:</strong></p>
+                <ul>
+                    <li>You will receive a confirmation email shortly</li>
+                    <li>Our team will review your application within 2-3 business days</li>
+                    <li>We'll contact you if your profile matches our requirements</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeSuccessModal()" class="modal-btn primary">Continue Job Search</button>
+                <button onclick="goToHome()" class="modal-btn secondary">Go to Homepage</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.getElementById('applyForm').addEventListener('submit', function(e) {
+        let currentJob = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get job ID from session storage or URL
+            const jobId = sessionStorage.getItem('applying_job_id') || 
+                         new URLSearchParams(window.location.search).get('job_id');
+            
+            if (jobId) {
+                loadJobInfo(jobId);
+                document.getElementById('jobIdInput').value = jobId;
+            }
+
+            // Set up form handlers
+            setupFormHandlers();
+            
+            // Pre-fill form if user is logged in
+            checkAndPreFillUserInfo();
+        });
+
+        // Load job information
+        async function loadJobInfo(jobId) {
+            try {
+                const response = await fetch(`../../api/jobs.php?action=get&id=${jobId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentJob = data.job;
+                    displayJobInfo(currentJob);
+                } else {
+                    console.error('Failed to load job info:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading job info:', error);
+            }
+        }
+
+        // Display job information
+        function displayJobInfo(job) {
+            document.getElementById('jobTitleDisplay').textContent = job.title;
+            document.getElementById('companyDisplay').textContent = job.company;
+            document.getElementById('locationDisplay').textContent = job.location;
+            document.getElementById('jobTypeDisplay').textContent = job.job_type;
+            
+            // Update page title
+            document.title = `Apply for ${job.title} - PathFinder`;
+            
+            // Show job info, hide default header
+            document.getElementById('jobInfo').style.display = 'block';
+            document.getElementById('defaultHeader').style.display = 'none';
+        }
+
+        // Set up form event handlers
+        function setupFormHandlers() {
+            // File input handlers
+            setupFileInput('cv', 'cvFileName');
+            setupFileInput('motivation', 'motivationFileName');
+            
+            // Form submit handler
+            document.getElementById('applyForm').addEventListener('submit', handleFormSubmit);
+        }
+
+        // Set up individual file input
+        function setupFileInput(inputId, fileNameId) {
+            const input = document.getElementById(inputId);
+            const fileName = document.getElementById(fileNameId);
+            
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check file size (5MB limit)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showAlert('File size must be less than 5MB', 'error');
+                        input.value = '';
+                        fileName.textContent = 'No file chosen';
+                        return;
+                    }
+                    
+                    // Check file type
+                    const allowedTypes = ['pdf', 'doc', 'docx'];
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    
+                    if (!allowedTypes.includes(fileExtension)) {
+                        showAlert('Please upload PDF, DOC, or DOCX files only', 'error');
+                        input.value = '';
+                        fileName.textContent = 'No file chosen';
+                        return;
+                    }
+                    
+                    fileName.textContent = file.name;
+                    fileName.style.color = '#28a745';
+                } else {
+                    fileName.textContent = 'No file chosen';
+                    fileName.style.color = '#666';
+                }
+            });
+        }
+
+        // Handle form submission
+        async function handleFormSubmit(e) {
             e.preventDefault();
-            alert('Your application has been submitted!');
-        });
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'submit');
+                
+                // Add all form fields
+                const formFields = ['job_id', 'full_name', 'address', 'phone', 'email', 'additional_info'];
+                formFields.forEach(field => {
+                    const element = document.querySelector(`[name="${field}"]`);
+                    if (element) {
+                        formData.append(field, element.value);
+                    }
+                });
+                
+                // Add files
+                const cvFile = document.getElementById('cv').files[0];
+                const motivationFile = document.getElementById('motivation').files[0];
+                
+                if (cvFile) formData.append('cv', cvFile);
+                if (motivationFile) formData.append('motivation', motivationFile);
+                
+                const response = await fetch('../../api/applications.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showLoading(false);
+                    showSuccessModal();
+                    // Clear session storage
+                    sessionStorage.removeItem('applying_job_id');
+                } else {
+                    showLoading(false);
+                    showAlert(data.message || 'Application submission failed', 'error');
+                }
+                
+            } catch (error) {
+                showLoading(false);
+                console.error('Error submitting application:', error);
+                showAlert('Failed to submit application. Please try again.', 'error');
+            }
+        }
 
-        // Update file name display when files are selected
-        document.getElementById('cv').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
-            document.getElementById('cvFileName').textContent = fileName;
-        });
+        // Validate form
+        function validateForm() {
+            // Check required fields
+            const requiredFields = ['full_name', 'address', 'phone', 'email', 'additional_info'];
+            for (const field of requiredFields) {
+                const element = document.querySelector(`[name="${field}"]`);
+                if (!element || !element.value.trim()) {
+                    showAlert(`Please fill in all required fields`, 'error');
+                    element && element.focus();
+                    return false;
+                }
+            }
+            
+            // Check email format
+            const email = document.getElementById('email').value;
+            if (!isValidEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                document.getElementById('email').focus();
+                return false;
+            }
+            
+            // Check files
+            const cvFile = document.getElementById('cv').files[0];
+            const motivationFile = document.getElementById('motivation').files[0];
+            
+            if (!cvFile) {
+                showAlert('Please upload your CV/Resume', 'error');
+                return false;
+            }
+            
+            if (!motivationFile) {
+                showAlert('Please upload your cover letter', 'error');
+                return false;
+            }
+            
+            // Check terms acceptance
+            if (!document.getElementById('termsAccept').checked) {
+                showAlert('Please accept the terms and conditions', 'error');
+                return false;
+            }
+            
+            return true;
+        }
 
-        document.getElementById('motivation').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
-            document.getElementById('motivationFileName').textContent = fileName;
-        });
+        // Check if user is logged in and pre-fill info
+        async function checkAndPreFillUserInfo() {
+            try {
+                const response = await fetch('../../includes/session.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=check_session'
+                });
+                const data = await response.json();
+                
+                if (data.logged_in && data.user_info && data.user_info.type === 'user') {
+                    // Pre-fill email if user is logged in
+                    document.getElementById('email').value = data.user_info.email || '';
+                    document.getElementById('fullname').value = data.user_info.name || '';
+                }
+            } catch (error) {
+                console.error('Error checking login status:', error);
+            }
+        }
+
+        // Show success modal
+        function showSuccessModal() {
+            document.getElementById('successModal').style.display = 'block';
+        }
+
+        // Close success modal
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            // Redirect to job listings
+            if (currentJob && currentJob.category_slug) {
+                window.location.href = `${currentJob.category_slug}.html`;
+            } else {
+                window.location.href = '../../index.html';
+            }
+        }
+
+        // Go to home
+        function goToHome() {
+            window.location.href = '../../index.html';
+        }
+
+        // UI helper functions
+        function showAlert(message, type = 'error') {
+            const alertDiv = document.getElementById('alert-message');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+            
+            // Scroll to alert
+            alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showLoading(show) {
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoader = document.getElementById('submitLoader');
+            
+            submitBtn.disabled = show;
+            submitText.style.display = show ? 'none' : 'inline';
+            submitLoader.style.display = show ? 'inline' : 'none';
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
     </script>
+
+    <style>
+        /* Additional styles for the application form */
+        .job-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #f1683a;
+        }
+
+        .job-info h2 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        .job-summary p {
+            margin: 8px 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .job-summary strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .file-info {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .checkbox-group {
+            margin: 25px 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox-label a {
+            color: #f1683a;
+            text-decoration: none;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 25px 25px 0 25px;
+            text-align: center;
+        }
+
+        .modal-header h3 {
+            color: #28a745;
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .modal-body {
+            padding: 20px 25px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .modal-body ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .modal-body li {
+            margin: 8px 0;
+        }
+
+        .modal-footer {
+            padding: 0 25px 25px 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.primary {
+            background: #f1683a;
+            color: white;
+            border-color: #f1683a;
+        }
+
+        .modal-btn.primary:hover {
+            background: #ff4500;
+            border-color: #ff4500;
+        }
+
+        .modal-btn.secondary {
+            background: transparent;
+            color: #666;
+            border-color: #ddd;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #f8f9fa;
+        }
+
+        /* Loading state for submit button */
+        #submitBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
+            }
+        }
+
+        /* File validation feedback */
+        .file-name {
+            transition: color 0.3s ease;
+        }
+
+        /* Form validation styles */
+        .input-group input:invalid,
+        .input-group textarea:invalid {
+            border-color: #dc3545;
+        }
+
+        .input-group input:valid,
+        .input-group textarea:valid {
+            border-color: #28a745;
+        }
+    </style>
+    <script src="../../includes/nav-replacement.js"></script>
 </body>
 </html>
