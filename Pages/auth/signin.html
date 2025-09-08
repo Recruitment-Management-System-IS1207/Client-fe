@@ -136,9 +136,12 @@
             const originalText = button.textContent;
             showLoading(button, true, originalText);
             
-            fetch('../../includes/auth.php', {
+            fetch('../../includes/session.php', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=${isAdmin ? 'admin_login' : 'login'}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
             })
             .then(response => response.json())
             .then(data => {
@@ -152,6 +155,7 @@
                         if (isAdmin) {
                             window.location.href = '../admin/dashboard.html';
                         } else {
+                            // For regular users, redirect to home.html instead of index.html
                             window.location.href = '../../index.html';
                         }
                     }, 1500);

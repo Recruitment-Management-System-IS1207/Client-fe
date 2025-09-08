@@ -4,7 +4,7 @@
  * Handles session checks, logout, and user info
  */
 
-require_once '../config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 // Handle logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
@@ -55,7 +55,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => true, 'message' => 'Logged out successfully']);
             break;
 
-        
+        case 'login':
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            require_once __DIR__ . '/auth.php';
+            $result = Auth::loginUser($email, $password);
+            echo json_encode($result);
+            break;
+
+        case 'admin_login':
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            require_once __DIR__ . '/auth.php';
+            $result = Auth::loginAdmin($email, $password);
+            echo json_encode($result);
+            break;
             
         default:
             echo json_encode(['success' => false, 'message' => 'Invalid action']);

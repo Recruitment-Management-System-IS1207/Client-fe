@@ -91,7 +91,6 @@ function updateNavigationContent(nav, userStatus) {
             // Admin navigation
             nav.innerHTML = `
                 <a href="${pathPrefix}index.html">Home</a>
-                <a href="${pathPrefix}Pages/Features/help/feature.html">Features</a>
                 <a href="${pathPrefix}Pages/Features/about/about.html">About</a>
                 <a href="${pathPrefix}Pages/Features/help/help.html">Help</a>
                 <div class="nav-user-menu" data-user-type="admin">
@@ -117,7 +116,6 @@ function updateNavigationContent(nav, userStatus) {
             nav.innerHTML = `
                 <div class="nav-links">
                     <a href="${pathPrefix}index.html">Home</a>
-                    <a href="${pathPrefix}Pages/Features/help/feature.html">Features</a>
                     <a href="${pathPrefix}Pages/Features/about/about.html">About</a>
                     <a href="${pathPrefix}Pages/Features/help/help.html">Help</a>
                 </div>

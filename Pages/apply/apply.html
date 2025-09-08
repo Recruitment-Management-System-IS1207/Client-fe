@@ -60,7 +60,86 @@
                                 <label for="extra">Additional Information</label>
                                 <textarea id="extra" name="extra" rows="4" placeholder="Write something about yourself or your motivation..." required></textarea>
                             </div>
+                            <div class="agreement-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" required>
+                                    <span class="checkmark"></span>
+                                    <span class="agreement-text">I agree to the <a href="#" style="color: #f1683a;">Terms and Conditions</a> and <a href="#" style="color: #f1683a;">Privacy Policy</a></span>
+                                </label>
+                            </div>
                             <button type="submit" class="signin-btn">Submit Application</button>
+                            
+                            <style>
+                                .agreement-group {
+                                    margin: 20px 0;
+                                }
+                                
+                                .checkbox-container {
+                                    display: flex;
+                                    align-items: center;
+                                    position: relative;
+                                    cursor: pointer;
+                                    font-size: 14px;
+                                    user-select: none;
+                                    gap: 8px;
+                                }
+
+                                .checkbox-container input {
+                                    position: absolute;
+                                    opacity: 0;
+                                    cursor: pointer;
+                                    height: 0;
+                                    width: 0;
+                                }
+
+                                .checkmark {
+                                    position: relative;
+                                    height: 18px;
+                                    width: 18px;
+                                    background-color: #fff;
+                                    border: 2px solid #ccc;
+                                    border-radius: 3px;
+                                    flex-shrink: 0;
+                                }
+
+                                .checkbox-container:hover input ~ .checkmark {
+                                    border-color: #f1683a;
+                                }
+
+                                .checkbox-container input:checked ~ .checkmark {
+                                    background-color: #f1683a;
+                                    border-color: #f1683a;
+                                }
+
+                                .checkmark:after {
+                                    content: "";
+                                    position: absolute;
+                                    display: none;
+                                    left: 5px;
+                                    top: 1px;
+                                    width: 4px;
+                                    height: 9px;
+                                    border: solid white;
+                                    border-width: 0 2px 2px 0;
+                                    transform: rotate(45deg);
+                                }
+
+                                .checkbox-container input:checked ~ .checkmark:after {
+                                    display: block;
+                                }
+
+                                .agreement-text {
+                                    line-height: 1.4;
+                                }
+
+                                .agreement-text a {
+                                    text-decoration: none;
+                                }
+
+                                .agreement-text a:hover {
+                                    text-decoration: underline;
+                                }
+                            </style>
                         </form>
                     </div>
                 </div>
